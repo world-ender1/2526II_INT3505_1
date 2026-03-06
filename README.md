@@ -1,6 +1,6 @@
-# Demo Uniform Interface trong REST
+# Demo REST: Uniform Interface + Stateless
 
-Project này dùng Flask để minh hoạ ràng buộc **Uniform Interface** của REST.
+Project này dùng Flask để minh hoạ 2 ràng buộc của REST: **Uniform Interface** và **Stateless**.
 
 ## 1) Resource-based URI
 
@@ -27,6 +27,13 @@ URI chỉ biểu diễn tài nguyên (danh từ), không nhúng hành động nh
 
 Mỗi task trả về có `links.self` và `links.collection` để client biết các bước tiếp theo.
 
+## 5) Stateless (không lưu session phía server)
+
+- Server **không lưu trạng thái đăng nhập/session** của client.
+- Mỗi request đến `/tasks` phải tự mang đủ thông tin qua header `X-Client-Id`.
+- Nếu thiếu header này, server trả `400`.
+- Response trả lại `client_id` để thấy rõ request nào đang được xử lý.
+
 ## Chạy demo
 
 1. Cài thư viện:
@@ -36,4 +43,4 @@ Mỗi task trả về có `links.self` và `links.collection` để client biế
 3. Mở terminal khác, chạy client:
    - `python client.py`
 
-Client sẽ lần lượt gọi các API để bạn trình bày đầy đủ Uniform Interface.
+Client hiện demo 1 request `GET /tasks` và gửi `X-Client-Id` để thể hiện Stateless.
