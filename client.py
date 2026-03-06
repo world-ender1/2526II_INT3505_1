@@ -4,7 +4,7 @@ import requests
 url = "http://127.0.0.1:5000/"
 
 try:
-    # Gửi yêu cầu GET đến server
+    # Gửi yêu cầu GET đến server~
     response = requests.get(url)
 
     # Kiểm tra nếu kết nối thành công (status code 200)
