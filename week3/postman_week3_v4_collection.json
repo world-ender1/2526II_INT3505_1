@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "SOA Week3 V4 - Clarity Demo",
+    "description": "Postman collection to test week3 version 4 (clarity): field-level validation, actionable errors, and explicit contract endpoint.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - GET Root (clarity intro)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "2 - GET Contract spec (clarity endpoint)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/spec",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "spec"]
+        }
+      }
+    },
+    {
+      "name": "3 - POST Create success (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman clarity check\",\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "4 - POST Missing title (400 with guidance)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "5 - POST Invalid done type (400 field-level)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Invalid done type\",\n  \"done\": \"false\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "6 - GET Not found (404 with hint)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "999"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5004"
+    }
+  ]
+}
