@@ -1,0 +1,117 @@
+{
+  "info": {
+    "name": "SOA Week3 V5 - Extensibility Demo",
+    "description": "Postman collection for week3 version 5 (extensibility): one generic handler supports multiple resources via config.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - GET Root (extensibility intro)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "2 - GET task-items collection",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "3 - POST task-items create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Created in task-items\",\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "4 - GET note-items collection (new resource)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/note-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "note-items"]
+        }
+      }
+    },
+    {
+      "name": "5 - POST note-items create (same handler)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Created in note-items\",\n  \"done\": true\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/note-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "note-items"]
+        }
+      }
+    },
+    {
+      "name": "6 - GET unsupported resource (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/unknown-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "unknown-items"]
+        }
+      }
+    },
+    {
+      "name": "7 - GET task-items spec",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/spec",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "spec"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5005"
+    }
+  ]
+}
