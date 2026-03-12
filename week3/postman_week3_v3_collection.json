@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "SOA Week3 V3 - Consistency Demo",
+    "description": "Postman collection for testing consistent success/error response envelopes in week3 version 3.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - GET Root (consistency intro)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "2 - GET Collection success (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "3 - POST Create success (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman consistency check\",\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "4 - POST Validation error (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      }
+    },
+    {
+      "name": "5 - GET Not found error (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "999"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5003"
+    }
+  ]
+}
