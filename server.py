@@ -1,4 +1,6 @@
-from flask import Flask, jsonify, request, url_for
+import hashlib
+import json
+from flask import Flask, jsonify, request, url_for, make_response
 from pathlib import Path
 
 app = Flask(__name__)
@@ -78,6 +80,29 @@ def task_representation(task):
         },
     }
 
+
+def compute_etag(data) -> str:
+    """Tinh ETag bang cach hash JSON cua data."""
+    serialized = json.dumps(data, sort_keys=True, ensure_ascii=False)
+    return hashlib.md5(serialized.encode()).hexdigest()
+
+
+def make_cached_response(body: dict, status: int = 200, max_age: int = 30):
+    """Tao response voi ETag va Cache-Control."""
+    etag = compute_etag(body)
+    client_etag = request.headers.get("If-None-Match")
+
+    if client_etag == etag:
+        resp = make_response("", 304)
+        resp.headers["ETag"] = etag
+        resp.headers["Cache-Control"] = f"max-age={max_age}"
+        return resp
+
+    resp = make_response(jsonify(body), status)
+    resp.headers["ETag"] = etag
+    resp.headers["Cache-Control"] = f"max-age={max_age}"
+    return resp
+
 @app.route('/')
 def hello():
     return jsonify(
@@ -96,7 +121,8 @@ def get_tasks():
     client_id = get_client_id()
 
     result = [task_representation(task) for task in tasks.values()]
-    return jsonify({"client_id": client_id, "items": result}), 200
+    body = {"client_id": client_id, "items": result}
+    return make_cached_response(body, status=200)
 
 
 @app.post('/tasks')
@@ -124,7 +150,7 @@ def get_task(task_id):
     task = tasks.get(task_id)
     if not task:
         return jsonify({"error": "Khong tim thay task"}), 404
-    return jsonify(task_representation(task)), 200
+    return make_cached_response(task_representation(task), status=200)
 
 
 @app.put('/tasks/<int:task_id>')
