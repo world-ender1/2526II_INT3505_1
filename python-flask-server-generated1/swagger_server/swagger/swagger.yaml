@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: API Quản lý Sách (Book Management API)
+  description: |
+    API này được thiết kế dựa trên các mẫu thiết kế trong sách "API Design Patterns" của JJ Geewax.
+    Nó hỗ trợ đầy đủ các thao tác CRUD (Create, Read, Update, Delete) cho tài nguyên Sách.
+  contact:
+    name: Hưng
+    email: phamhung01062005@gmail.com
+  version: 1.0.0
+servers:
+- url: https://api.library-demo.com/v1
+  description: Production server
+- url: http://localhost:8080/v1
+  description: Local development server
+tags:
+- name: Books
+  description: Các thao tác liên quan đến quản lý tài nguyên Sách
+paths:
+  /books:
+    get:
+      tags:
+      - Books
+      summary: Liệt kê danh sách sách
+      description: Trả về danh sách tất cả các sách có trong hệ thống. Hỗ trợ phân
+        trang (Pagination).
+      operationId: books_get
+      parameters:
+      - name: page_size
+        in: query
+        description: Số lượng sách trên một trang
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 10
+      responses:
+        "200":
+          description: Danh sách sách được truy xuất thành công
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+                x-content-type: application/json
+      x-openapi-router-controller: swagger_server.controllers.books_controller
+    post:
+      tags:
+      - Books
+      summary: Tạo mới một cuốn sách
+      operationId: books_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+        required: true
+      responses:
+        "201":
+          description: Sách đã được tạo thành công
+      security:
+      - BearerAuth: []
+      x-openapi-router-controller: swagger_server.controllers.books_controller
+  /books/{bookId}:
+    get:
+      tags:
+      - Books
+      summary: Lấy chi tiết một cuốn sách
+      operationId: books_book_id_get
+      parameters:
+      - name: bookId
+        in: path
+        description: ID duy nhất của cuốn sách (định dạng UUID hoặc string)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Thông tin chi tiết cuốn sách
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_404"
+      x-openapi-router-controller: swagger_server.controllers.books_controller
+    delete:
+      tags:
+      - Books
+      summary: Xóa sách
+      operationId: books_book_id_delete
+      parameters:
+      - name: bookId
+        in: path
+        description: ID duy nhất của cuốn sách (định dạng UUID hoặc string)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: "Đã xóa thành công, không trả về nội dung"
+      x-openapi-router-controller: swagger_server.controllers.books_controller
+    patch:
+      tags:
+      - Books
+      summary: Cập nhật một phần thông tin sách
+      description: Chỉ gửi lên những trường cần thay đổi (theo mẫu thiết kế Partial
+        Update của JJ Geewax).
+      operationId: books_book_id_patch
+      parameters:
+      - name: bookId
+        in: path
+        description: ID duy nhất của cuốn sách (định dạng UUID hoặc string)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+      responses:
+        "200":
+          description: Cập nhật thành công
+      x-openapi-router-controller: swagger_server.controllers.books_controller
+components:
+  schemas:
+    Book:
+      required:
+      - author
+      - id
+      - title
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        title:
+          type: string
+          example: API Design Patterns
+        author:
+          type: string
+          example: JJ Geewax
+        publishedYear:
+          minimum: 1000
+          type: integer
+          example: 2021
+      example:
+        author: JJ Geewax
+        id: 550e8400-e29b-41d4-a716-446655440000
+        publishedYear: 2021
+        title: API Design Patterns
+    BookInput:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        publishedYear:
+          type: integer
+    inline_response_404:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Resource not found
+  responses:
+    NotFound:
+      description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/inline_response_404"
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: swagger_server.controllers.authorization_controller.check_BearerAuth
+
