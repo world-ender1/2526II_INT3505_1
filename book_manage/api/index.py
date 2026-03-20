@@ -1,6 +1,14 @@
+import sys
+import os
 from flask import jsonify, request, abort
 import connexion
-import os
+from dotenv import load_dotenv
+
+# Thêm thư mục gốc vào sys.path để connexion có thể import api.index
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Load biến môi trường từ .env
+load_dotenv()
 
 # In-memory data store
 books = [
@@ -45,7 +53,7 @@ def create_book():
 # Khởi tạo Connexion App
 app = connexion.FlaskApp(__name__, specification_dir='../')
 
-# Đọc file openapi.yaml và thiết lập Swagger UI tại /docs
+# Đọc file openapi.yaml và thiết lập Swagger UI tại /ui
 app.add_api('openapi.yaml', arguments={'title': 'Book Management API'})
 
 # Lấy ra underlying Flask app object để Vercel sử dụng
@@ -54,9 +62,11 @@ application = app.app
 # Thêm route root
 @application.route("/", methods=["GET"])
 def index():
+    server_url = os.getenv("SERVER_URL", "https://your-project.vercel.app")
     return jsonify({
         "message": "Welcome to Book API",
-        "docs": "/ui" # Connexion mặc định map swagger UI ra /ui
+        "docs": f"{server_url}/ui",
+        "openapi_spec": f"{server_url}/openapi.json"
     }), 200
 
 

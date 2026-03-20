@@ -5,16 +5,14 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://your-project.vercel.app
-    description: Vercel Production
-  - url: http://localhost:8080
-    description: Local Development
+  - url: /
+    description: Current Server
 
 paths:
   /books:
     get:
       summary: Lấy danh sách tất cả sách
-      operationId: getAllBooks
+      operationId: api.index.get_all_books
       responses:
         "200":
           description: Danh sách sách
@@ -36,7 +34,7 @@ paths:
 
     post:
       summary: Tạo sách mới
-      operationId: createBook
+      operationId: api.index.create_book
       requestBody:
         required: true
         content:
@@ -64,7 +62,7 @@ paths:
   /books/{book_id}:
     get:
       summary: Lấy sách theo ID
-      operationId: getBookById
+      operationId: api.index.get_book_by_id
       parameters:
         - name: book_id
           in: path
