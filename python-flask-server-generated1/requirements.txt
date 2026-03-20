@@ -1,5 +1,20 @@
-connexion >= 2.6.0
-connexion[swagger-ui] >= 2.6.0
-python_dateutil == 2.6.0
-setuptools >= 21.0.0
-swagger-ui-bundle >= 0.0.2
+﻿connexion==2.15.1
+Flask==3.1.3
+swagger_ui_bundle==1.1.0
+python-dateutil==2.9.0.post0
+PyYAML==6.0.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==0.30.0
+attrs==26.1.0
+inflection==0.5.1
+clickclick==20.10.2
+Werkzeug==3.1.6
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+itsdangerous==2.2.0
+click==8.3.1
+six==1.17.0
+packaging==26.0
+setuptools>=21.0.0
