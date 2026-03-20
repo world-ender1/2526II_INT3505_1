@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, request, abort
-
-app = Flask(__name__)
+from flask import jsonify, request, abort
+import connexion
+import os
 
 # In-memory data store
 books = [
@@ -10,33 +10,26 @@ books = [
 next_id = 3
 
 
-@app.route("/books", methods=["GET"])
 def get_all_books():
     """Lấy danh sách tất cả sách"""
-    return jsonify(books), 200
+    return books, 200
 
 
-@app.route("/books/<int:book_id>", methods=["GET"])
 def get_book_by_id(book_id):
     """Lấy sách theo ID"""
     book = next((b for b in books if b["id"] == book_id), None)
     if book is None:
         abort(404, description=f"Book with id {book_id} not found")
-    return jsonify(book), 200
+    return book, 200
 
 
-@app.route("/books", methods=["POST"])
 def create_book():
     """Tạo sách mới"""
     global next_id
-    data = request.get_json()
-
-    if not data:
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+    else:
         abort(400, description="Request body must be JSON")
-
-    for field in ["title", "author"]:
-        if field not in data:
-            abort(400, description=f"Missing required field: '{field}'")
 
     new_book = {
         "id": next_id,
@@ -46,17 +39,25 @@ def create_book():
     }
     books.append(new_book)
     next_id += 1
-    return jsonify(new_book), 201
+    return new_book, 201
 
 
-@app.errorhandler(404)
-def not_found(e):
-    return jsonify({"error": str(e.description)}), 404
+# Khởi tạo Connexion App
+app = connexion.FlaskApp(__name__, specification_dir='../')
 
+# Đọc file openapi.yaml và thiết lập Swagger UI tại /docs
+app.add_api('openapi.yaml', arguments={'title': 'Book Management API'})
 
-@app.errorhandler(400)
-def bad_request(e):
-    return jsonify({"error": str(e.description)}), 400
+# Lấy ra underlying Flask app object để Vercel sử dụng
+application = app.app
+
+# Thêm route root
+@application.route("/", methods=["GET"])
+def index():
+    return jsonify({
+        "message": "Welcome to Book API",
+        "docs": "/ui" # Connexion mặc định map swagger UI ra /ui
+    }), 200
 
 
 if __name__ == "__main__":
