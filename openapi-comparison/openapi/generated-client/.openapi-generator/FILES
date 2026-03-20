@@ -1,0 +1,12 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+api.ts
+base.ts
+common.ts
+configuration.ts
+docs/Book.md
+docs/BookInput.md
+docs/DefaultApi.md
+git_push.sh
+index.ts

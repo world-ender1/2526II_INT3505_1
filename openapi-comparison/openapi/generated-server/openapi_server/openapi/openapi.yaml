@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  description: "API for managing a library (Books, Authors, Borrowers)"
+  title: Library Management API
+  version: 1.0.0
+servers:
+- description: Local Server
+  url: http://api.library.local/v1
+paths:
+  /books:
+    get:
+      operationId: get_books
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Book"
+                type: array
+          description: A list of books
+      summary: Get all books
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      operationId: add_book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book created
+      summary: Add a new book
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /books/{id}:
+    get:
+      operationId: get_book_by_id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book details
+        "404":
+          description: Book not found
+      summary: Get a book by ID
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Book:
+      example:
+        author: J.R.R. Tolkien
+        id: 101
+        publishedYear: 1954
+        title: The Lord of the Rings
+      properties:
+        id:
+          example: 101
+          title: id
+          type: integer
+        title:
+          example: The Lord of the Rings
+          title: title
+          type: string
+        author:
+          example: J.R.R. Tolkien
+          title: author
+          type: string
+        publishedYear:
+          example: 1954
+          title: publishedYear
+          type: integer
+      title: Book
+      type: object
+    BookInput:
+      example:
+        author: J.R.R. Tolkien
+        publishedYear: 1954
+        title: The Lord of the Rings
+      properties:
+        title:
+          example: The Lord of the Rings
+          title: title
+          type: string
+        author:
+          example: J.R.R. Tolkien
+          title: author
+          type: string
+        publishedYear:
+          example: 1954
+          title: publishedYear
+          type: integer
+      required:
+      - author
+      - title
+      title: BookInput
+      type: object
