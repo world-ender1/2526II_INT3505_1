@@ -1,0 +1,127 @@
+{
+  "info": {
+    "name": "SOA Week3 V1 - API Versioning Demo",
+    "description": "Postman collection for testing week3 version 1 server endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - GET Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "2 - GET Tasks Collection",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks"]
+        }
+      }
+    },
+    {
+      "name": "3 - POST Create Task (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman test for v1\",\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "if (jsonData.id) {",
+              "    pm.collectionVariables.set('task_id', jsonData.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - POST Validation Error (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks"]
+        }
+      }
+    },
+    {
+      "name": "5 - GET Task By ID (from created task)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks/{{task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks", "{{task_id}}"]
+        }
+      }
+    },
+    {
+      "name": "6 - GET Task Not Found (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/tasks/9999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "tasks", "9999"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5001"
+    },
+    {
+      "key": "task_id",
+      "value": "1"
+    }
+  ]
+}

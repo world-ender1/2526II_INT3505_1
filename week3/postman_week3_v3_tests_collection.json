@@ -1,0 +1,237 @@
+{
+  "info": {
+    "name": "SOA Week3 V3 - Consistency Demo (With Tests)",
+    "description": "Postman collection for week3 version 3 with automated tests for status codes and unified response envelope.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - GET Root (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Envelope success fields exist', function () {",
+              "  pm.expect(body.status).to.eql('success');",
+              "  pm.expect(body.api_version).to.eql('v1');",
+              "  pm.expect(body.resource).to.eql('task-items');",
+              "  pm.expect(body.data).to.be.an('object');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - GET Collection (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Collection response is consistent', function () {",
+              "  pm.expect(body.status).to.eql('success');",
+              "  pm.expect(body.api_version).to.eql('v1');",
+              "  pm.expect(body.resource).to.eql('task-items');",
+              "  pm.expect(body.data).to.be.an('array');",
+              "  pm.expect(body.meta).to.have.property('count');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - POST Create (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman consistency check with tests\",\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Create response is consistent', function () {",
+              "  pm.expect(body.status).to.eql('success');",
+              "  pm.expect(body.api_version).to.eql('v1');",
+              "  pm.expect(body.resource).to.eql('task-items');",
+              "  pm.expect(body.data).to.be.an('object');",
+              "  pm.expect(body.data).to.have.property('id');",
+              "});",
+              "",
+              "if (body.data && body.data.id) {",
+              "  pm.collectionVariables.set('task_item_id', body.data.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - GET Item By ID (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/{{task_item_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "{{task_item_id}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Item response contains expected id', function () {",
+              "  pm.expect(body.status).to.eql('success');",
+              "  pm.expect(String(body.data.id)).to.eql(String(pm.collectionVariables.get('task_item_id')));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - POST Validation Error (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"done\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400', function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Error envelope is consistent', function () {",
+              "  pm.expect(body.status).to.eql('error');",
+              "  pm.expect(body.api_version).to.eql('v1');",
+              "  pm.expect(body.resource).to.eql('task-items');",
+              "  pm.expect(body.error.code).to.eql('TITLE_REQUIRED');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - GET Not Found (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/task-items/99999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "task-items", "99999"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 404', function () {",
+              "  pm.response.to.have.status(404);",
+              "});",
+              "",
+              "var body = pm.response.json();",
+              "pm.test('Not found uses error envelope', function () {",
+              "  pm.expect(body.status).to.eql('error');",
+              "  pm.expect(body.error.code).to.eql('TASK_ITEM_NOT_FOUND');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5003"
+    },
+    {
+      "key": "task_item_id",
+      "value": "1"
+    }
+  ]
+}
