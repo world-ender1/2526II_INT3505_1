@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Book Management API
+  description: API quản lý sách - GET all, GET by ID, POST
+  version: 1.0.0
+
+servers:
+  - url: https://your-project.vercel.app
+    description: Vercel Production
+  - url: http://localhost:8080
+    description: Local Development
+
+paths:
+  /books:
+    get:
+      summary: Lấy danh sách tất cả sách
+      operationId: getAllBooks
+      responses:
+        "200":
+          description: Danh sách sách
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+              example:
+                - id: 1
+                  title: Clean Code
+                  author: Robert C. Martin
+                  year: 2008
+                - id: 2
+                  title: The Pragmatic Programmer
+                  author: Andrew Hunt
+                  year: 1999
+
+    post:
+      summary: Tạo sách mới
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+            example:
+              title: "Design Patterns"
+              author: "Gang of Four"
+              year: 1994
+      responses:
+        "201":
+          description: Sách vừa được tạo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: Thiếu trường bắt buộc hoặc body không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/{book_id}:
+    get:
+      summary: Lấy sách theo ID
+      operationId: getBookById
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Thông tin sách
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Không tìm thấy sách
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Clean Code
+        author:
+          type: string
+          example: Robert C. Martin
+        year:
+          type: integer
+          nullable: true
+          example: 2008
+
+    BookInput:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        title:
+          type: string
+          example: Design Patterns
+        author:
+          type: string
+          example: Gang of Four
+        year:
+          type: integer
+          nullable: true
+          example: 1994
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Book with id 99 not found
