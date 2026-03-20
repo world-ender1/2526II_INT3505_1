@@ -1,0 +1,64 @@
+FORMAT: 1A
+HOST: http://api.library.local/v1
+
+# Library Management API
+
+API for managing a library (Books, Authors, Borrowers)
+
+# Group Books
+
+## Book Collection [/books]
+
+### List All Books [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 101,
+                "title": "The Lord of the Rings",
+                "author": "J.R.R. Tolkien",
+                "publishedYear": 1954
+            }
+        ]
+
+### Add a New Book [POST]
+
++ Request (application/json)
+
+        {
+            "title": "The Lord of the Rings",
+            "author": "J.R.R. Tolkien",
+            "publishedYear": 1954
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 102,
+            "title": "The Lord of the Rings",
+            "author": "J.R.R. Tolkien",
+            "publishedYear": 1954
+        }
+
+## Book Resource [/books/{id}]
+
++ Parameters
+    + id: 101 (number, required) - Book ID
+
+### Get a Book by ID [GET]
+
++ Response 200 (application/json)
+
+        {
+            "id": 101,
+            "title": "The Lord of the Rings",
+            "author": "J.R.R. Tolkien",
+            "publishedYear": 1954
+        }
+
++ Response 404 (application/json)
+
+        {
+            "error": "Book not found"
+        }

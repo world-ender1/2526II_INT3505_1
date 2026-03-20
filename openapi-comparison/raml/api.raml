@@ -1,0 +1,72 @@
+#%RAML 1.0
+title: Library Management API
+version: v1
+baseUri: http://api.library.local/{version}
+mediaType: application/json
+
+types:
+  Book:
+    type: object
+    properties:
+      id: integer
+      title: string
+      author: string
+      publishedYear?: integer
+  BookInput:
+    type: object
+    properties:
+      title: string
+      author: string
+      publishedYear?: integer
+
+/books:
+  get:
+    description: List all books
+    responses:
+      200:
+        body:
+          application/json:
+            type: Book[]
+            example: |
+              [
+                {
+                  "id": 101,
+                  "title": "The Lord of the Rings",
+                  "author": "J.R.R. Tolkien",
+                  "publishedYear": 1954
+                }
+              ]
+  post:
+    description: Add a new book
+    body:
+      application/json:
+        type: BookInput
+        example: |
+          {
+            "title": "The Lord of the Rings",
+            "author": "J.R.R. Tolkien",
+            "publishedYear": 1954
+          }
+    responses:
+      201:
+        body:
+          application/json:
+            type: Book
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        example: 101
+    get:
+      description: Get a book by id
+      responses:
+        200:
+          body:
+            application/json:
+              type: Book
+        404:
+          body:
+            application/json:
+              example: |
+                {"error": "Book not found"}
