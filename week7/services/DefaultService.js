@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
+const Product = require('../models/Product');
+const crypto = require('crypto');
 
 /**
 * Create a product
@@ -10,17 +12,21 @@ const Service = require('./Service');
 const createProduct = ({ productInput }) => new Promise(
   async (resolve, reject) => {
     try {
-      resolve(Service.successResponse({
-        productInput,
-      }));
+      const newProduct = new Product({
+        ...productInput,
+        id: crypto.randomUUID()
+      });
+      const savedProduct = await newProduct.save();
+      resolve(Service.successResponse(savedProduct));
     } catch (e) {
       reject(Service.rejectResponse(
         e.message || 'Invalid input',
-        e.status || 405,
+        e.status || 500,
       ));
     }
   },
 );
+
 /**
 * Delete a product
 *
@@ -30,17 +36,20 @@ const createProduct = ({ productInput }) => new Promise(
 const deleteProduct = ({ id }) => new Promise(
   async (resolve, reject) => {
     try {
-      resolve(Service.successResponse({
-        id,
-      }));
+      const deletedProduct = await Product.findOneAndDelete({ id });
+      if (!deletedProduct) {
+        return reject(Service.rejectResponse('Product not found', 404));
+      }
+      resolve(Service.successResponse('Deleted successfully', 204));
     } catch (e) {
       reject(Service.rejectResponse(
         e.message || 'Invalid input',
-        e.status || 405,
+        e.status || 500,
       ));
     }
   },
 );
+
 /**
 * Get a product by ID
 *
@@ -50,17 +59,20 @@ const deleteProduct = ({ id }) => new Promise(
 const getProductById = ({ id }) => new Promise(
   async (resolve, reject) => {
     try {
-      resolve(Service.successResponse({
-        id,
-      }));
+      const product = await Product.findOne({ id });
+      if (!product) {
+        return reject(Service.rejectResponse('Product not found', 404));
+      }
+      resolve(Service.successResponse(product));
     } catch (e) {
       reject(Service.rejectResponse(
         e.message || 'Invalid input',
-        e.status || 405,
+        e.status || 500,
       ));
     }
   },
 );
+
 /**
 * Get all products
 *
@@ -69,16 +81,17 @@ const getProductById = ({ id }) => new Promise(
 const getProducts = () => new Promise(
   async (resolve, reject) => {
     try {
-      resolve(Service.successResponse({
-      }));
+      const products = await Product.find({});
+      resolve(Service.successResponse(products));
     } catch (e) {
       reject(Service.rejectResponse(
         e.message || 'Invalid input',
-        e.status || 405,
+        e.status || 500,
       ));
     }
   },
 );
+
 /**
 * Update a product
 *
@@ -89,14 +102,19 @@ const getProducts = () => new Promise(
 const updateProduct = ({ id, productInput }) => new Promise(
   async (resolve, reject) => {
     try {
-      resolve(Service.successResponse({
-        id,
-        productInput,
-      }));
+      const updatedProduct = await Product.findOneAndUpdate(
+        { id },
+        { ...productInput },
+        { new: true, runValidators: true }
+      );
+      if (!updatedProduct) {
+        return reject(Service.rejectResponse('Product not found', 404));
+      }
+      resolve(Service.successResponse(updatedProduct));
     } catch (e) {
       reject(Service.rejectResponse(
         e.message || 'Invalid input',
-        e.status || 405,
+        e.status || 500,
       ));
     }
   },
