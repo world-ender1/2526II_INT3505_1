@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  description: API for managing products
+  title: Product API
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/v1
+paths:
+  /products:
+    get:
+      operationId: get_products
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Product"
+                type: array
+          description: A list of products
+      summary: Get all products
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      operationId: create_product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+          description: Created
+      summary: Create a product
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /products/{id}:
+    delete:
+      operationId: delete_product
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Product not found
+      summary: Delete a product
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    get:
+      operationId: get_product_by_id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+          description: A single product
+        "404":
+          description: Product not found
+      summary: Get a product by ID
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    put:
+      operationId: update_product
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+          description: Updated
+        "404":
+          description: Product not found
+      summary: Update a product
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Product:
+      example:
+        price: 0.8008281904610115
+        name: name
+        description: description
+        id: id
+      properties:
+        id:
+          title: id
+          type: string
+        name:
+          title: name
+          type: string
+        description:
+          title: description
+          type: string
+        price:
+          title: price
+          type: number
+      required:
+      - id
+      - name
+      - price
+      title: Product
+      type: object
+    ProductInput:
+      example:
+        price: 0.8008281904610115
+        name: name
+        description: description
+      properties:
+        name:
+          title: name
+          type: string
+        description:
+          title: description
+          type: string
+        price:
+          title: price
+          type: number
+      required:
+      - name
+      - price
+      title: ProductInput
+      type: object
