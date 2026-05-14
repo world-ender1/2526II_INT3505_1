@@ -13,7 +13,6 @@ next_id = 1
 def str_to_bool(value):
     return str(value).strip().lower() == "true"
 
-
 def load_tasks_from_file():
     global tasks, next_id
 

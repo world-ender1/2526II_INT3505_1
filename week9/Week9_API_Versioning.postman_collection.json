@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "e6a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5",
+		"name": "Week 9 - API Versioning Demo",
+		"description": "Collection để test demo API Versioning (URL, Query Params, Header) cho tuần 9.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[URL] API v1 (Legacy)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 100,\n  \"currency\": \"USD\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"payments"
+					]
+				},
+				"description": "Test API v1 cũ với cấu trúc phẳng. Trả về Deprecation headers."
+			},
+			"response": []
+		},
+		{
+			"name": "[URL] API v2 (Breaking Changes)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"price\": {\n    \"amount\": 150,\n    \"currency\": \"USD\"\n  },\n  \"payment_method\": \"credit_card\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v2/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v2",
+						"payments"
+					]
+				},
+				"description": "Test API v2 mới với cấu trúc nested object."
+			},
+			"response": []
+		},
+		{
+			"name": "[Query Param] Gọi v1 (?v=1)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 200,\n  \"currency\": \"EUR\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/payments?v=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"payments"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Gọi chung route `/api/payments` nhưng thêm query param `v=1`."
+			},
+			"response": []
+		},
+		{
+			"name": "[Query Param] Gọi v2 (?v=2)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"price\": {\n    \"amount\": 250,\n    \"currency\": \"EUR\"\n  },\n  \"payment_method\": \"paypal\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/payments?v=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"payments"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Gọi chung route `/api/payments` nhưng thêm query param `v=2`."
+			},
+			"response": []
+		},
+		{
+			"name": "[Header] Gọi v1 (X-API-Version: 1)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-API-Version",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 300,\n  \"currency\": \"JPY\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"payments"
+					]
+				},
+				"description": "Truyền header `X-API-Version: 1` để gọi logic v1."
+			},
+			"response": []
+		},
+		{
+			"name": "[Header] Gọi v2 (X-API-Version: 2)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-API-Version",
+						"value": "2",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"price\": {\n    \"amount\": 350,\n    \"currency\": \"JPY\"\n  },\n  \"payment_method\": \"bank_transfer\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"payments"
+					]
+				},
+				"description": "Truyền header `X-API-Version: 2` để gọi logic v2."
+			},
+			"response": []
+		}
+	]
+}

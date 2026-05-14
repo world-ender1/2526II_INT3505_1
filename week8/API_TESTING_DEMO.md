@@ -174,17 +174,16 @@ npm install -g newman
 npm install -g newman-reporter-htmlextra  # Gói tạo báo cáo UI đẹp
 ```
 
-2. **Xuất (Export) Collection & Environment từ Postman**:
-   - Chuột phải vào Collection trong Postman -> `Export` -> Lưu thành `collection.json`.
-   - Click vào Environment góc trên bên phải -> `Export` -> Lưu thành `env.json`.
+2. **Sử dụng trực tiếp file Collection có sẵn**:
+   - Bạn có thể dùng luôn file `postman_collection.json` đã được tạo sẵn trong dự án. File này đã được tích hợp toàn bộ API và biến môi trường `base_url`.
 
 3. **Chạy tự động trên Terminal**:
 ```bash
 # Lệnh chạy cơ bản
-newman run collection.json -e env.json
+newman run postman_collection.json
 
-# Lệnh chạy và xuất báo cáo HTML (Test Report)
-newman run collection.json -e env.json -r htmlextra
+# Lệnh chạy và xuất báo cáo HTML (Test Report siêu đẹp)
+newman run postman_collection.json -r htmlextra
 ```
 *(Báo cáo sẽ được tự động tạo trong thư mục `newman/` với biểu đồ trực quan về số lượng API pass/fail)*
 

@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "b960b777-628f-410a-b28d-19cd471413a2",
+		"name": "SOA_Week8_API_Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. GET /products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// [UNIT TEST] Kiểm tra Status Code cơ bản",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// [PERFORMANCE TEST] Đo Response time",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"// [INTEGRATION TEST] Kiểm tra cấu trúc dữ liệu trả về từ Database",
+							"pm.test(\"Response is an array of products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an(\"array\");",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");",
+							"    pm.expect(jsonData[0]).to.have.property(\"name\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. POST /products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// [UNIT TEST] Kiểm tra mã trạng thái tạo thành công",
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// [INTEGRATION TEST] Kiểm tra kết quả tạo mới & Lưu biến dùng chung",
+							"pm.test(\"Product created successfully with correct data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property(\"id\");",
+							"    pm.expect(jsonData.name).to.eql(\"Keyboard\");",
+							"    ",
+							"    // Lưu ID sản phẩm mới tạo vào biến môi trường để dùng cho request tiếp theo",
+							"    pm.environment.set(\"new_product_id\", jsonData.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Keyboard\",\n    \"price\": 120\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. GET /products/{{new_product_id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// [UNIT TEST] Kiểm tra trạng thái trả về",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// [INTEGRATION TEST] Xác minh xem hệ thống có lấy đúng ID sản phẩm vừa tạo ở bước POST không",
+							"pm.test(\"Check correct product retrieved\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // Lấy ID từ biến môi trường để so sánh",
+							"    var expectedId = parseInt(pm.environment.get(\"new_product_id\"));",
+							"    pm.expect(jsonData.id).to.eql(expectedId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products/{{new_product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{new_product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. PUT /products/{{new_product_id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// [UNIT TEST] Kiểm tra trạng thái cập nhật",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// [INTEGRATION TEST] Kiểm tra xem dữ liệu sau khi PUT có thực sự thay đổi trong Database không",
+							"pm.test(\"Price updated successfully\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.price).to.eql(150); // Kiểm tra giá đã được update",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"price\": 150\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{new_product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{new_product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. DELETE /products/{{new_product_id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// [UNIT TEST] Kiểm tra trạng thái xóa",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// [UNIT TEST] Kiểm tra message phản hồi từ server",
+							"pm.test(\"Delete confirmation message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Product deleted\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products/{{new_product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{new_product_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}

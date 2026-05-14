@@ -1,0 +1,166 @@
+openapi: 3.0.1
+info:
+  description: "API for managing a library (Books, Authors, Borrowers)"
+  title: Library Management API
+  version: ""
+servers:
+- url: http://api.library.local/v1
+tags:
+- name: Books
+paths:
+  /books:
+    get:
+      operationId: List All Books
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - id: 101
+                title: The Lord of the Rings
+                author: J.R.R. Tolkien
+                publishedYear: 1954
+              schema:
+                example:
+                - id: 101
+                  title: The Lord of the Rings
+                  author: J.R.R. Tolkien
+                  publishedYear: 1954
+                items:
+                  $ref: "#/components/schemas/List_All_Books_200_response_inner"
+                type: array
+          description: OK
+      summary: List All Books
+      tags:
+      - Books
+      x-eov-operation-handler: controllers/BooksController
+    post:
+      operationId: Add a New Book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Add_a_New_Book_request"
+        required: false
+      responses:
+        "201":
+          content:
+            application/json:
+              example:
+                id: 102
+                title: The Lord of the Rings
+                author: J.R.R. Tolkien
+                publishedYear: 1954
+              schema:
+                $ref: "#/components/schemas/Add_a_New_Book_201_response"
+          description: Created
+      summary: Add a New Book
+      tags:
+      - Books
+      x-codegen-request-body-name: body
+      x-eov-operation-handler: controllers/BooksController
+  /books/{id}:
+    get:
+      operationId: Get a Book by ID
+      parameters:
+      - description: Book ID
+        example: "101"
+        in: path
+        name: id
+        required: true
+        schema:
+          type: number
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                id: 101
+                title: The Lord of the Rings
+                author: J.R.R. Tolkien
+                publishedYear: 1954
+              schema:
+                $ref: "#/components/schemas/Get_a_Book_by_ID_200_response"
+          description: OK
+        "404":
+          content:
+            application/json:
+              example:
+                error: Book not found
+              schema:
+                $ref: "#/components/schemas/Get_a_Book_by_ID_404_response"
+          description: Not Found
+      summary: Get a Book by ID
+      tags:
+      - Books
+      x-eov-operation-handler: controllers/BooksController
+components:
+  schemas:
+    Book Collection:
+      type: object
+    Book Resource:
+      type: object
+    List_All_Books_200_response_inner:
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        author:
+          type: string
+        publishedYear:
+          type: number
+      type: object
+    Add_a_New_Book_request:
+      example:
+        title: The Lord of the Rings
+        author: J.R.R. Tolkien
+        publishedYear: 1954
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        publishedYear:
+          type: number
+      type: object
+    Add_a_New_Book_201_response:
+      example:
+        id: 102
+        title: The Lord of the Rings
+        author: J.R.R. Tolkien
+        publishedYear: 1954
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        author:
+          type: string
+        publishedYear:
+          type: number
+      type: object
+    Get_a_Book_by_ID_200_response:
+      example:
+        id: 101
+        title: The Lord of the Rings
+        author: J.R.R. Tolkien
+        publishedYear: 1954
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        author:
+          type: string
+        publishedYear:
+          type: number
+      type: object
+    Get_a_Book_by_ID_404_response:
+      example:
+        error: Book not found
+      properties:
+        error:
+          type: string
+      type: object
+x-original-swagger-version: "2.0"

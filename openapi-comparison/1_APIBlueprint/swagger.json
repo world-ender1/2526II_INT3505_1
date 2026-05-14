@@ -1,0 +1,241 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Library Management API",
+        "version": "",
+        "description": "API for managing a library (Books, Authors, Borrowers)"
+    },
+    "host": "api.library.local",
+    "basePath": "/v1",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/books": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "id": 101,
+                                    "title": "The Lord of the Rings",
+                                    "author": "J.R.R. Tolkien",
+                                    "publishedYear": 1954
+                                }
+                            ]
+                        },
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "author": {
+                                        "type": "string"
+                                    },
+                                    "publishedYear": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "example": [
+                                {
+                                    "id": 101,
+                                    "title": "The Lord of the Rings",
+                                    "author": "J.R.R. Tolkien",
+                                    "publishedYear": 1954
+                                }
+                            ]
+                        }
+                    }
+                },
+                "summary": "List All Books",
+                "operationId": "List All Books",
+                "description": "",
+                "tags": [
+                    "Books"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": []
+            },
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "id": 102,
+                                "title": "The Lord of the Rings",
+                                "author": "J.R.R. Tolkien",
+                                "publishedYear": 1954
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "author": {
+                                    "type": "string"
+                                },
+                                "publishedYear": {
+                                    "type": "number"
+                                }
+                            },
+                            "example": {
+                                "id": 102,
+                                "title": "The Lord of the Rings",
+                                "author": "J.R.R. Tolkien",
+                                "publishedYear": 1954
+                            }
+                        }
+                    }
+                },
+                "summary": "Add a New Book",
+                "operationId": "Add a New Book",
+                "description": "",
+                "tags": [
+                    "Books"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "author": {
+                                    "type": "string"
+                                },
+                                "publishedYear": {
+                                    "type": "number"
+                                }
+                            },
+                            "example": {
+                                "title": "The Lord of the Rings",
+                                "author": "J.R.R. Tolkien",
+                                "publishedYear": 1954
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ]
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "id": 101,
+                                "title": "The Lord of the Rings",
+                                "author": "J.R.R. Tolkien",
+                                "publishedYear": 1954
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "author": {
+                                    "type": "string"
+                                },
+                                "publishedYear": {
+                                    "type": "number"
+                                }
+                            },
+                            "example": {
+                                "id": 101,
+                                "title": "The Lord of the Rings",
+                                "author": "J.R.R. Tolkien",
+                                "publishedYear": 1954
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "error": "Book not found"
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "error": "Book not found"
+                            }
+                        }
+                    }
+                },
+                "summary": "Get a Book by ID",
+                "operationId": "Get a Book by ID",
+                "description": "",
+                "tags": [
+                    "Books"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Book ID",
+                        "required": true,
+                        "x-example": "101",
+                        "type": "number"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": []
+            }
+        }
+    },
+    "definitions": {
+        "Book Collection": {},
+        "Book Resource": {}
+    },
+    "securityDefinitions": {},
+    "tags": [
+        {
+            "name": "Books"
+        }
+    ]
+}

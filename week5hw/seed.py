@@ -8,11 +8,11 @@ db = client['pagination_demo']
 collection = db['logs']
 
 def seed_data():
-    print("🔗 Đã kết nối đến Database")
+    print(" Đã kết nối đến Database")
     
     # Xoá database cũ
     collection.delete_many({})
-    print("🧹 Đã dọn sạch dữ liệu cũ")
+    print(" Đã dọn sạch dữ liệu cũ")
     
     # Đánh Index cho _id (Mặc định _id trong MongoDB đã được đánh Index, ta Explicit khai báo cho an tâm)
     collection.create_index([("_id", ASCENDING)])
@@ -21,7 +21,7 @@ def seed_data():
     batch_size = 10000
     batches = total_records // batch_size
     
-    print(f"🚀 Bắt đầu nhồi {total_records:,} bản ghi (Gồm {batches} lô)...")
+    print(f" Bắt đầu nhồi {total_records:,} bản ghi (Gồm {batches} lô)...")
     start_time = time.time()
     
     for i in range(batches):
@@ -42,7 +42,7 @@ def seed_data():
         print(f"\rĐang xử lý lô thứ {i + 1}/{batches}...", end="")
         
     end_time = time.time()
-    print(f"\n✅ Hoàn tất Seed Data! (Mất {round(end_time - start_time, 2)} giây)")
+    print(f"\n Hoàn tất Seed Data! (Mất {round(end_time - start_time, 2)} giây)")
     
 if __name__ == '__main__':
     seed_data()

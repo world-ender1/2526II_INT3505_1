@@ -32,12 +32,13 @@ Trước khi gọi thầy cô chấm, hãy đảm bảo bạn đã:
 * **Thao tác:** Mở một Terminal mới (chưa chạy code).
 * **Lời thoại gợi ý:**
   > "Khi làm dự án thực tế với hàng trăm API, việc click chuột chạy từng cái rất mất thời gian. Vì vậy em sử dụng công cụ **Newman** để tự động chạy toàn bộ bộ Test (Test Suite) qua môi trường dòng lệnh (CLI), rất phù hợp để tích hợp vào CI/CD."
-* **Thao tác:** Chạy lệnh sau trên terminal (Giả sử bạn đã export collection từ Postman ra tên là `collection.json`):
+* **Thao tác:** Chạy lệnh sau trên terminal (Sử dụng file `postman_collection.json` đã được chuẩn bị sẵn):
   ```bash
-  newman run collection.json
+  newman run postman_collection.json -r htmlextra
   ```
 * **Lời thoại gợi ý:**
-  > "Như thầy/cô thấy, Newman tự động gửi tuần tự cả 5 request CRUD và in ra kết quả pass/fail dạng bảng cực kỳ trực quan trên terminal."
+  > "Thay vì chỉ in kết quả trên Terminal, em đã dùng thêm plugin `htmlextra` để Newman tự động xuất ra một báo cáo kiểm thử dạng Dashboard HTML cực kỳ trực quan."
+* **Thao tác:** Mở file HTML vừa được sinh ra trong thư mục `newman/` bằng trình duyệt để thầy cô xem biểu đồ trực quan thống kê số lượng Test Passed/Failed.
 
 ### Bước 3: Kiểm thử Hiệu Năng và Chịu Tải (Load Testing) (3 Phút)
 * **Thao tác:** Mở file kịch bản `locustfile.py`.
